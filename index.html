@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Интерактивная страница для добавления фотографий мест" />
+    <title>Mesto Russia</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <script type="module" crossorigin src="/Shablinskii_Artem_Mesto/assets/index-CMN3SRBy.js"></script>
+    <link rel="stylesheet" crossorigin href="/Shablinskii_Artem_Mesto/assets/index-BHfZXyM-.css">
+  </head>
+  <body class="page">
+    <div class="page__container">
+      <header class="header page__header">
+        <img src="./logo.svg" alt="Логотип Место Россия" class="header__logo" width="142" height="33" />
+      </header>
+
+      <main class="content">
+        <section class="profile page__profile">
+          <button type="button" class="profile__avatar-button" aria-label="Обновить аватар">
+            <img src="" alt="Аватар пользователя" class="profile__avatar" />
+          </button>
+          <div class="profile__info">
+            <div class="profile__title-row">
+              <h1 class="profile__title"></h1>
+              <button type="button" class="profile__edit-button" aria-label="Редактировать профиль"></button>
+            </div>
+            <p class="profile__description"></p>
+          </div>
+          <button type="button" class="profile__add-button" aria-label="Добавить место"></button>
+        </section>
+
+        <section class="places page__places">
+          <ul class="places__list"></ul>
+        </section>
+      </main>
+
+      <footer class="footer page__footer">
+        <p class="footer__copyright">&copy; 2026 Mesto Russia</p>
+      </footer>
+    </div>
+
+    <div class="popup popup_type_edit">
+      <div class="popup__overlay"></div>
+      <div class="popup__container">
+        <button type="button" class="popup__close" aria-label="Закрыть"></button>
+        <h2 class="popup__title">Редактировать профиль</h2>
+        <form class="popup__form" name="edit-profile" novalidate>
+          <label class="popup__field">
+            <input
+              type="text"
+              name="profile-name"
+              id="profile-name-input"
+              class="popup__input popup__input_type_name"
+              placeholder="Имя"
+              required
+              minlength="2"
+              maxlength="40"
+            />
+            <span class="popup__error" id="profile-name-input-error"></span>
+          </label>
+          <label class="popup__field">
+            <input
+              type="text"
+              name="profile-about"
+              id="profile-about-input"
+              class="popup__input popup__input_type_about"
+              placeholder="О себе"
+              required
+              minlength="2"
+              maxlength="200"
+            />
+            <span class="popup__error" id="profile-about-input-error"></span>
+          </label>
+          <button type="submit" class="popup__button popup__button_disabled" disabled>Сохранить</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="popup popup_type_new-card">
+      <div class="popup__overlay"></div>
+      <div class="popup__container">
+        <button type="button" class="popup__close" aria-label="Закрыть"></button>
+        <h2 class="popup__title">Новое место</h2>
+        <form class="popup__form" name="new-place" novalidate>
+          <label class="popup__field">
+            <input
+              type="text"
+              name="place-name"
+              id="place-name-input"
+              class="popup__input popup__input_type_title"
+              placeholder="Название"
+              required
+              minlength="2"
+              maxlength="30"
+            />
+            <span class="popup__error" id="place-name-input-error"></span>
+          </label>
+          <label class="popup__field">
+            <input
+              type="text"
+              name="place-link"
+              id="place-link-input"
+              class="popup__input popup__input_type_url"
+              placeholder="Ссылка на картинку"
+              required
+              minlength="2"
+            />
+            <span class="popup__error" id="place-link-input-error"></span>
+          </label>
+          <button type="submit" class="popup__button popup__button_disabled" disabled>Создать</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="popup popup_type_image">
+      <div class="popup__overlay"></div>
+      <figure class="popup__figure">
+        <button type="button" class="popup__close" aria-label="Закрыть"></button>
+        <img src="" alt="" class="popup__image" />
+        <figcaption class="popup__caption"></figcaption>
+      </figure>
+    </div>
+
+    <div class="popup popup_type_avatar">
+      <div class="popup__overlay"></div>
+      <div class="popup__container">
+        <button type="button" class="popup__close" aria-label="Закрыть"></button>
+        <h2 class="popup__title">Обновить аватар</h2>
+        <form class="popup__form" name="update-avatar" novalidate>
+          <label class="popup__field">
+            <input
+              type="text"
+              name="avatar-link"
+              id="avatar-link-input"
+              class="popup__input popup__input_type_url"
+              placeholder="Ссылка на изображение"
+              required
+              minlength="2"
+            />
+            <span class="popup__error" id="avatar-link-input-error"></span>
+          </label>
+          <button type="submit" class="popup__button popup__button_disabled" disabled>Сохранить</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="popup popup_type_remove-card">
+      <div class="popup__overlay"></div>
+      <div class="popup__container popup__container_type_confirm">
+        <button type="button" class="popup__close" aria-label="Закрыть"></button>
+        <h2 class="popup__title popup__title_type_confirm">Вы уверены?</h2>
+        <form class="popup__form" name="remove-card" novalidate>
+          <button type="submit" class="popup__button">Да</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="popup popup_type_card-info">
+      <div class="popup__overlay"></div>
+      <div class="popup__container popup__container_type_info">
+        <button type="button" class="popup__close" aria-label="Закрыть"></button>
+        <h2 class="popup__title">Информация о карточке</h2>
+        <dl class="card-info">
+          <div class="card-info__row">
+            <dt class="card-info__term">Описание</dt>
+            <dd class="card-info__value card-info__value_type_description"></dd>
+          </div>
+          <div class="card-info__row">
+            <dt class="card-info__term">Дата создания</dt>
+            <dd class="card-info__value card-info__value_type_date"></dd>
+          </div>
+          <div class="card-info__row">
+            <dt class="card-info__term">Владелец</dt>
+            <dd class="card-info__value card-info__value_type_owner"></dd>
+          </div>
+          <div class="card-info__row">
+            <dt class="card-info__term">Количество лайков</dt>
+            <dd class="card-info__value card-info__value_type_likes-count"></dd>
+          </div>
+          <div class="card-info__row card-info__row_type_tags">
+            <dt class="card-info__term">Лайкнули</dt>
+            <dd class="card-info__likes"></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <template id="card-template">
+      <li class="places__item">
+        <article class="card">
+          <img class="card__image" src="#" alt="" />
+          <button type="button" class="card__delete-button" aria-label="Удалить карточку"></button>
+          <button type="button" class="card__info-button" aria-label="Информация о карточке">i</button>
+          <div class="card__panel">
+            <h2 class="card__title"></h2>
+            <div class="card__likes">
+              <button type="button" class="card__like-button" aria-label="Нравится"></button>
+              <span class="card__like-count">0</span>
+            </div>
+          </div>
+        </article>
+      </li>
+    </template>
+
+  </body>
+</html>
