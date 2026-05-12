@@ -96,12 +96,13 @@
           </label>
           <label class="popup__field">
             <input
-              type="url"
+              type="text"
               name="place-link"
               id="place-link-input"
               class="popup__input popup__input_type_url"
               placeholder="Ссылка на картинку"
               required
+              minlength="2"
             />
             <span class="popup__error" id="place-link-input-error"></span>
           </label>
@@ -127,12 +128,13 @@
         <form class="popup__form" name="update-avatar" novalidate>
           <label class="popup__field">
             <input
-              type="url"
+              type="text"
               name="avatar-link"
               id="avatar-link-input"
               class="popup__input popup__input_type_url"
               placeholder="Ссылка на изображение"
               required
+              minlength="2"
             />
             <span class="popup__error" id="avatar-link-input-error"></span>
           </label>

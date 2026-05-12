@@ -16,29 +16,84 @@ const hideInputError = (formElement, inputElement, settings) => {
   inputElement.classList.remove(settings.inputErrorClass);
 };
 
-const nameTitlePattern = /^[a-zA-Zа-яА-ЯёЁ\s-]+$/;
-const customNameMessage =
+const profileNamePattern = /^[a-zA-Zа-яА-ЯёЁ\s-]+$/;
+const placeNamePattern = /^[a-zA-Zа-яА-ЯёЁ0-9\s\-.,«»()№'’]+$/;
+const customProfileNameMessage =
   'Разрешены только латинские, кириллические буквы, пробелы и дефис';
+const customPlaceNameMessage =
+  'Используйте буквы, цифры, пробел и распространённые знаки (. , - скобки)';
 
-const isNameOrTitleField = (inputElement) => {
+const isProfileNameField = (inputElement) => {
+  return inputElement.name === 'profile-name';
+};
+
+const isPlaceNameField = (inputElement) => {
+  return inputElement.name === 'place-name';
+};
+
+const isLinkField = (inputElement) => {
   return (
-    inputElement.name === 'profile-name' || inputElement.name === 'place-name'
+    inputElement.name === 'place-link' || inputElement.name === 'avatar-link'
   );
 };
 
-const checkCustomNameValidity = (inputElement) => {
-  const value = inputElement.value;
+const buildLinkCandidate = (value) => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return '';
+  }
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+};
+
+const checkLinkValidity = (inputElement) => {
+  const value = inputElement.value.trim();
   if (!value) {
     return { valid: true };
   }
-  if (!nameTitlePattern.test(value)) {
-    return { valid: false, message: customNameMessage };
+  const candidate = buildLinkCandidate(inputElement.value);
+  try {
+    const parsed = new URL(candidate);
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return {
+        valid: false,
+        message: 'Ссылка должна начинаться с http:// или https://',
+      };
+    }
+    return { valid: true };
+  } catch {
+    return { valid: false, message: 'Введите корректный адрес ссылки' };
+  }
+};
+
+const checkCustomNameValidity = (inputElement) => {
+  const trimmed = inputElement.value.trim();
+  if (!trimmed) {
+    return { valid: true };
+  }
+  if (isProfileNameField(inputElement)) {
+    if (!profileNamePattern.test(trimmed)) {
+      return { valid: false, message: customProfileNameMessage };
+    }
+    return { valid: true };
+  }
+  if (isPlaceNameField(inputElement)) {
+    if (!placeNamePattern.test(trimmed)) {
+      return { valid: false, message: customPlaceNameMessage };
+    }
+    return { valid: true };
   }
   return { valid: true };
 };
 
 const checkInputValidity = (formElement, inputElement, settings) => {
-  if (isNameOrTitleField(inputElement)) {
+  if (isLinkField(inputElement)) {
+    const linkCheck = checkLinkValidity(inputElement);
+    if (!linkCheck.valid) {
+      showInputError(formElement, inputElement, linkCheck.message, settings);
+      return;
+    }
+    hideInputError(formElement, inputElement, settings);
+  } else if (isProfileNameField(inputElement) || isPlaceNameField(inputElement)) {
     const custom = checkCustomNameValidity(inputElement);
     if (!custom.valid) {
       showInputError(formElement, inputElement, custom.message, settings);
@@ -64,7 +119,15 @@ const hasInvalidInput = (formElement, settings) => {
   );
 
   return inputList.some((inputElement) => {
-    if (isNameOrTitleField(inputElement)) {
+    if (isLinkField(inputElement)) {
+      const linkCheck = checkLinkValidity(inputElement);
+      if (!linkCheck.valid) {
+        return true;
+      }
+    } else if (
+      isProfileNameField(inputElement) ||
+      isPlaceNameField(inputElement)
+    ) {
       const custom = checkCustomNameValidity(inputElement);
       if (!custom.valid) {
         return true;

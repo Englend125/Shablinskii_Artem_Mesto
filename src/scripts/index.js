@@ -37,6 +37,11 @@ const formNewCard = popupNewCard.querySelector('.popup__form');
 const formAvatar = popupAvatar.querySelector('.popup__form');
 const formRemoveCard = popupRemoveCard.querySelector('.popup__form');
 
+const formEditSubmitButton = formEdit.querySelector('.popup__button');
+const formNewCardSubmitButton = formNewCard.querySelector('.popup__button');
+const formAvatarSubmitButton = formAvatar.querySelector('.popup__button');
+const formRemoveCardSubmitButton = formRemoveCard.querySelector('.popup__button');
+
 const nameInput = formEdit.querySelector('#profile-name-input');
 const aboutInput = formEdit.querySelector('#profile-about-input');
 const placeNameInput = formNewCard.querySelector('#place-name-input');
@@ -174,16 +179,23 @@ const createCardHandlers = () => ({
 });
 
 const renderInitialCards = (cards) => {
-  const handlers = createCardHandlers();
   cards.forEach((item) => {
     const cardElement = createCard(
       item,
       '#card-template',
       currentUserId,
-      handlers,
+      cardHandlers,
     );
     placesList.append(cardElement);
   });
+};
+
+const normalizeLinkUrl = (value) => {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
 };
 
 const setSubmitLoadingState = (button, isLoading, loadingText) => {
@@ -197,6 +209,8 @@ const setSubmitLoadingState = (button, isLoading, loadingText) => {
   button.disabled = false;
   delete button.dataset.storedLabel;
 };
+
+const cardHandlers = createCardHandlers();
 
 enableValidation(validationSettings);
 
@@ -226,17 +240,16 @@ profileAvatarButton.addEventListener('click', () => {
 
 formEdit.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  const submitButton = formEdit.querySelector('.popup__button');
-  setSubmitLoadingState(submitButton, true, 'Сохранение...');
+  setSubmitLoadingState(formEditSubmitButton, true, 'Сохранение...');
 
-  updateUserInfo(nameInput.value, aboutInput.value)
+  updateUserInfo(nameInput.value.trim(), aboutInput.value.trim())
     .then((user) => {
       renderUserData(user);
       closePopup(popupEdit);
     })
     .catch(() => {})
     .finally(() => {
-      setSubmitLoadingState(submitButton, false);
+      setSubmitLoadingState(formEditSubmitButton, false);
       nameInput.dispatchEvent(new Event('input'));
       aboutInput.dispatchEvent(new Event('input'));
     });
@@ -244,17 +257,18 @@ formEdit.addEventListener('submit', (evt) => {
 
 formNewCard.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  const submitButton = formNewCard.querySelector('.popup__button');
-  setSubmitLoadingState(submitButton, true, 'Создание...');
+  setSubmitLoadingState(formNewCardSubmitButton, true, 'Создание...');
 
-  addCard(placeNameInput.value, placeLinkInput.value)
+  addCard(
+    placeNameInput.value.trim(),
+    normalizeLinkUrl(placeLinkInput.value),
+  )
     .then((card) => {
-      const handlers = createCardHandlers();
       const cardElement = createCard(
         card,
         '#card-template',
         currentUserId,
-        handlers,
+        cardHandlers,
       );
       placesList.prepend(cardElement);
       formNewCard.reset();
@@ -263,7 +277,7 @@ formNewCard.addEventListener('submit', (evt) => {
     })
     .catch(() => {})
     .finally(() => {
-      setSubmitLoadingState(submitButton, false);
+      setSubmitLoadingState(formNewCardSubmitButton, false);
       placeNameInput.dispatchEvent(new Event('input'));
       placeLinkInput.dispatchEvent(new Event('input'));
     });
@@ -271,17 +285,16 @@ formNewCard.addEventListener('submit', (evt) => {
 
 formAvatar.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  const submitButton = formAvatar.querySelector('.popup__button');
-  setSubmitLoadingState(submitButton, true, 'Сохранение...');
+  setSubmitLoadingState(formAvatarSubmitButton, true, 'Сохранение...');
 
-  updateAvatar(avatarLinkInput.value)
+  updateAvatar(normalizeLinkUrl(avatarLinkInput.value))
     .then((user) => {
       renderUserData(user);
       closePopup(popupAvatar);
     })
     .catch(() => {})
     .finally(() => {
-      setSubmitLoadingState(submitButton, false);
+      setSubmitLoadingState(formAvatarSubmitButton, false);
       avatarLinkInput.dispatchEvent(new Event('input'));
     });
 });
@@ -293,8 +306,7 @@ formRemoveCard.addEventListener('submit', (evt) => {
     return;
   }
 
-  const submitButton = formRemoveCard.querySelector('.popup__button');
-  setSubmitLoadingState(submitButton, true, 'Удаление...');
+  setSubmitLoadingState(formRemoveCardSubmitButton, true, 'Удаление...');
 
   deleteCard(cardPendingRemovalId)
     .then(() => {
@@ -305,7 +317,7 @@ formRemoveCard.addEventListener('submit', (evt) => {
     })
     .catch(() => {})
     .finally(() => {
-      setSubmitLoadingState(submitButton, false);
+      setSubmitLoadingState(formRemoveCardSubmitButton, false);
     });
 });
 

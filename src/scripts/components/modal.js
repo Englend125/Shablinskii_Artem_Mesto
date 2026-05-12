@@ -8,6 +8,7 @@ const handleEscKey = (evt) => {
 };
 
 export const openPopup = (popup) => {
+  document.removeEventListener('keydown', handleEscKey);
   popup.classList.add('popup_opened');
   document.addEventListener('keydown', handleEscKey);
 };
