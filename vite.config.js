@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 
-// Для GitHub Pages (project site вида username.github.io/repo/) задайте base: '/имя-репозитория/'
+// GitHub Pages (project site): https://englend125.github.io/Shablinskii_Artem_Mesto/
 export default defineConfig({
-  base: './',
+  base: '/Shablinskii_Artem_Mesto/',
 });
